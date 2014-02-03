@@ -44,7 +44,19 @@ function sortOffset(a,b){
      return parseInt(a["@offset"]) > parseInt(b["@offset"]) ? 1 : -1;
 };
 
-
+function selectedThis(obj) {
+      var uri = $(obj).data('uri');
+      var label = $(obj).data('label');
+      var ul = $(obj).parent();
+      ul.removeClass("candidates");
+      ul.addClass('hidden');
+      var a = ul.parent()[0].firstChild; // pega a DIV ul.parent() / [0].fistChild pega o elemento a dentro do div
+      $(a).removeClass('surfaceForm');
+      $(a).addClass('annotation');
+      $(a).attr({'href':uri, 'target':'_blank', 'data-uri':uri, 'data-label':label, 'about':uri, 'title':uri });
+   }
+   
+   
 (function( $ ){
 
    var powered_by = "<div style='font-size: 9px; float: right'><a href='http://spotlight.dbpedia.org'>Powered by DBpedia Spotlight</a></div>";
@@ -67,13 +79,15 @@ function sortOffset(a,b){
             li  += "<span class='hidden "+ key +"'>" + data[key] +"</span>";
         return li;
    }
+   
+  
 
    var Parser = {
 	getSelectBox: function(resources, className) {
              var ul =  $("<ul class='"+className+"s'></ul>");
              $.each(resources.get().reverse(), function(i, r) {
-                 var li = "<li class='"+className+" "+className+"-" + i + "'><a href='" + res_prefix + r["@uri"] + "' about='" + r["@uri"] + "'>" + r["@label"] + "</a>";
-
+                 var li = "<li onclick='selectedThis(this)' class='"+className+"' id='"+className+"-" + i + "' data-label='"+ r["@label"] + "'  data-uri='"+ res_prefix + r["@uri"] +"'>"+ r["@label"];         
+                
                  //TODO settings.showScores = ["finalScore"] foreach showscores, add k=v
                  if (settings.showScores == 'yes') {
                     li += " (<span class='finalScoreDisplay'>" + parseFloat(r["@finalScore"]).toPrecision(3) +"</span>)";
@@ -86,7 +100,8 @@ function sortOffset(a,b){
                                      "support": parseFloat(r["@support"]),
                                      "priorScore": parseFloat(r["@priorScore"])
                                     });
-                 
+                  li+= "<span class='viewlink'><a target='_blank' href='" + res_prefix + r["@uri"] + "' about='" + r["@uri"] + "'> [View] </a></span>";
+                  
                  li += "</li>";
                  var opt = $(li);
                  $(ul).append(opt);
