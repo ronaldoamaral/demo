@@ -44,6 +44,16 @@ function sortOffset(a,b){
      return parseInt(a["@offset"]) > parseInt(b["@offset"]) ? 1 : -1;
 };
 
+function viewsource() {
+      var list_annotation = new Array();    
+      var text_area = $('#text');
+      $('a.annotation').each(function(i) {
+          list_annotation.push({ 'label': $(this).data('label'), 'uri': $(this).data('uri') });
+      });               
+      return list_annotation, text_area;
+   }
+   
+
 function selectedThis(obj) {
       var uri = $(obj).data('uri');
       var label = $(obj).data('label');
